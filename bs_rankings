@@ -1,0 +1,20 @@
+from bs4 import BeautifulSoup
+import sqlite3
+import os
+import requests
+
+def get_team_rankings():
+    page_link = "https://www.teamrankings.com/ncb/standings/"
+    page = requests.get(page_link)
+    soup = BeautifulSoup(page.text, 'html.parser')
+    full_table = soup.find_all('div',class_="scroll-wrapper")
+    print(full_table)
+    
+
+    
+
+def main():
+    get_team_rankings()
+
+if __name__ == "__main__":
+    main()
