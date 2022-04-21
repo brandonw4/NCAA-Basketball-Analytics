@@ -19,8 +19,8 @@ def get_team_rankings():
             data_dict[team_name] = team_ranking
         except:
             continue
-    #for testing
-    print(data_dict)
+
+    return(data_dict)
  
 
     
