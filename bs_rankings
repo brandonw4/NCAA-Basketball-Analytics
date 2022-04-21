@@ -4,12 +4,24 @@ import os
 import requests
 
 def get_team_rankings():
-    page_link = "https://www.teamrankings.com/ncb/standings/"
+    page_link = "https://www.ncaa.com/rankings/basketball-men/d1/ncaa-mens-basketball-net-rankings"
     page = requests.get(page_link)
     soup = BeautifulSoup(page.text, 'html.parser')
-    full_table = soup.find_all('div',class_="scroll-wrapper")
-    print(full_table)
-    
+    full_table = soup.find_all('tr')
+    testRow1 = full_table[1]
+
+    data_dict = {}
+    for row in full_table:
+        try:
+            row_data = row.find_all('td')
+            team_name = row_data[2].text
+            team_ranking = int(row_data[0].text)
+            data_dict[team_name] = team_ranking
+        except:
+            continue
+    #for testing
+    print(data_dict)
+ 
 
     
 
