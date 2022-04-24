@@ -25,13 +25,24 @@ def data_entry():
 	conn.commit()
 
 def create_table_name():
-	c.executescript('CREATE TABLE IF NOT EXISTS Names (Id INT, Name TEXT)')
+	c.executescript('CREATE TABLE IF NOT EXISTS Names (Id INT, Name TEXT, TOTAL_Home_Points REAL, Total_Away_Points REAL)')
 def data_entry_name():
 	for i in list2:
 		Id = i[0]
 		Name = i[1]
 		c.execute("INSERT INTO Names (Id, Name) VALUES(?, ?)", (Id, Name))
 	conn.commit()
+
+def extra_data():
+	print()
+	for x in list3:
+		totalhome = x[5]
+		totalaway = x[6]
+		nametest = x[0]
+		c.execute("UPDATE Names SET TOTAL_Home_Points=?, TOTAL_Away_Points=? WHERE Name =?",(totalhome, totalaway, nametest))
+	conn.commit()	
+
+
 def get_team_rankings():
     page_link = "https://www.ncaa.com/rankings/basketball-men/d1/ncaa-mens-basketball-net-rankings"
     page = requests.get(page_link)
@@ -126,6 +137,7 @@ list3 = []
 Question = input("Would you like to use cached data? y/n")
 if Question ==('n'):
 	count = 0
+	print("This won't take long! Please wait a moment")
 	for i in Idlist:
 		url = "https://api-basketball.p.rapidapi.com/statistics"
 		querystring = {"season":"2021-2022","league":"116","team":"{}".format(i)}
@@ -143,6 +155,9 @@ if Question ==('n'):
 		name2 = name1['name']
 		val2 = (value['points'])
 		val3 = val2['for']
+		total = val3['total']
+		totalhome = total['home']
+		totalaway = total['away']
 		val4 = val3['average']
 		val5 = val2['against']
 		val6 = val5['average']
@@ -156,7 +171,7 @@ if Question ==('n'):
 		num2 = float(val4['all'])
 		num3 = float(val6['all'])
 		if win4 and loss4 != 0:
-			list3.append((name2, win4, loss4, num2, num3))
+			list3.append((name2, win4, loss4, num2, num3, totalhome, totalaway))
 elif Question ==('y'):
 	f = open(new_path)
 	xi = json.load(f)
@@ -182,6 +197,7 @@ elif Question ==('y'):
 		if win4 and loss4 != 0:
 			list3.append((name2, win4, loss4, num2, num3))
 data_entry()
+extra_data()
 print("Done!")
 print("--- %s seconds ---" % (time.time() - start_time))
 c.close()
