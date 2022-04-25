@@ -1,0 +1,41 @@
+from unittest import result
+import matplotlib.pyplot as plt
+import os
+import sqlite3
+
+def ranking_vs_home_points(cur, conn):
+    cur.execute("""
+    SELECT Ranking.Rank, Names.TOTAL_Home_Points 
+    FROM Names
+    JOIN Ranking ON Names.Name = Ranking.Name
+    GROUP BY Ranking.Rank
+    """)
+    db_results = cur.fetchall()
+    #print(db_results)
+    results_dict = {}
+    for r in db_results:
+        results_dict[r[0]] = r[1]
+    print(results_dict)
+
+    y = list(results_dict.values())
+    x = list(results_dict.keys())
+    plt.scatter(x,y)
+    plt.title("Ranking vs Home Points Scored")
+    plt.xlabel("X label")
+    plt.ylabel("Y label")
+    plt.show()
+    
+    
+
+
+
+def main():
+    source_dir = os.path.dirname(__file__)
+    full_path = os.path.join(source_dir, 'Testbase.db')
+    conn = sqlite3.connect(full_path)
+    cur = conn.cursor()
+    ranking_vs_home_points(cur, conn)
+    cur.close()
+
+if __name__ == "__main__":
+    main()
