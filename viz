@@ -11,20 +11,37 @@ def ranking_vs_home_points(cur, conn):
     GROUP BY Ranking.Rank
     """)
     db_results = cur.fetchall()
-    #print(db_results)
     results_dict = {}
     for r in db_results:
         results_dict[r[0]] = r[1]
-    print(results_dict)
 
     y = list(results_dict.values())
     x = list(results_dict.keys())
     plt.scatter(x,y)
     plt.title("Ranking vs Home Points Scored")
-    plt.xlabel("X label")
-    plt.ylabel("Y label")
+    plt.xlabel("Ranking")
+    plt.ylabel("Home Points Scored")
     plt.show()
     
+def avg_wins_vs_ranking(cur, conn):
+    cur.execute("""
+    SELECT Ranking.Rank, AVG(Points.Wins)
+    FROM Points
+    JOIN Ranking ON Ranking.Name = Points.Name
+    GROUP BY Ranking.Rank
+    """)
+    db_results = cur.fetchall()
+    results_dict = {}
+    for r in db_results:
+        results_dict[r[0]] = r[1]
+    
+    y = list(results_dict.values())
+    x = list(results_dict.keys())
+    plt.scatter(x,y)
+    plt.title("AVG Wins vs Ranking")
+    plt.xlabel("Ranking")
+    plt.ylabel("AVG Wins")
+    plt.show()
     
 
 
@@ -34,7 +51,8 @@ def main():
     full_path = os.path.join(source_dir, 'Testbase.db')
     conn = sqlite3.connect(full_path)
     cur = conn.cursor()
-    ranking_vs_home_points(cur, conn)
+    #ranking_vs_home_points(cur, conn)
+    avg_wins_vs_ranking(cur, conn)
     cur.close()
 
 if __name__ == "__main__":
