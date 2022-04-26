@@ -34,7 +34,6 @@ def data_entry_name():
 	conn.commit()
 
 def extra_data():
-	print()
 	for x in list3:
 		totalhome = x[5]
 		totalaway = x[6]
