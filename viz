@@ -53,7 +53,31 @@ def wins_vs_points_scored(cur, conn):
     with open(full_path, 'w') as f:
         json.dump(results_dict, f)
 
+def average_points_per_game_vs_ranking(cur, conn):
+    cur.execute("""
+    SELECT SUM(Names.TOTAL_Home_Points + Names.TOTAL_Away_Points), SUM(Points.Wins + Points.Losses), Ranking.Rank
+    FROM Names
+    JOIN Points ON Names.Name = Points.Name
+    JOIN Ranking ON Names.Name = Ranking.Name
+    GROUP BY Ranking.Rank
+    """)
+    db_results = cur.fetchall()
+    results_dict = {}
+    for r in db_results:
+        results_dict[r[2]] = int(r[0] / r[1])
+    
+    y = list(results_dict.values())
+    x = list(results_dict.keys())
+    plt.scatter(x,y)
+    plt.title("Average Points Per Game vs Ranking")
+    plt.xlabel("Average Points Per Game")
+    plt.ylabel("Ranking")
+    plt.show()
 
+    source_dir = os.path.dirname(__file__)
+    full_path = os.path.join(source_dir, 'average_points_per_game_vs_ranking.json')
+    with open(full_path, 'w') as f:
+        json.dump(results_dict, f)
 
 def main():
     source_dir = os.path.dirname(__file__)
@@ -62,6 +86,7 @@ def main():
     cur = conn.cursor()
     ranking_vs_home_points(cur, conn)
     wins_vs_points_scored(cur, conn)
+    average_points_per_game_vs_ranking(cur, conn)
     cur.close()
 
 if __name__ == "__main__":
