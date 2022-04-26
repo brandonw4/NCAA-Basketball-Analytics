@@ -82,6 +82,11 @@ def ranking_data():
         elif limitor > 25:
             break
     conn.commit()
+def read_data():
+	c.execute('SELECT Id FROM Names')
+	data = c.fetchall()
+	for i in data:
+		data2.append(i[0])
 testlst = []
 namelst = []
 for x, y in get_team_rankings().items():
@@ -122,11 +127,6 @@ for i in value:
 		list2.append((Id,Name))
 		Idlist.append(Id)
 data2 = []
-def read_data():
-	c.execute('SELECT Id FROM Names')
-	data = c.fetchall()
-	for i in data:
-		data2.append(i[0])
 read_data()
 Adrian = data2
 data_entry_name()
